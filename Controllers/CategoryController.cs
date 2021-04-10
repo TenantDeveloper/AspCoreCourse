@@ -23,9 +23,27 @@ namespace Ef_Core_Demo.Controllers
 
         public IActionResult Get() 
         {
-          var Categories =   _context.Categories.ToList();
+            var Categories = _context.Categories.ToList();
             return Ok(Categories); // response 200;
         }
+
+        [HttpGet("Exist")]
+        public IActionResult IsExist(string name)
+        {
+          // bool exist =   _context.Categories.;
+
+            return Ok();
+        }
+
+
+        [HttpGet("Search")]
+        public IActionResult Search([FromQuery] string name)
+        {
+            var categories = _context.Categories.Where(c => c.Name.StartsWith(name)).ToList()
+                  .Where(c => c.Products.Any());
+            return Ok(categories);
+        }
+
 
         [HttpPost("AddCategory")]
         public IActionResult AddCategory(Category category)
@@ -41,7 +59,9 @@ namespace Ef_Core_Demo.Controllers
         {
             // step 1 : get object depends on id
 
-            Category category = _context.Categories.Find(id); // row from sql
+            // Category category = _context.Categories.Find(id); // row from sql
+
+             var category = _context.Categories.SingleOrDefault(c => c.Id == id);
             if (category == null)
                 return NotFound();
 
